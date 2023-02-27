@@ -153,6 +153,7 @@ def run_bert_pretrain(strategy):
                 'strategy.')
 
   keras_utils.set_config_v2(FLAGS.enable_xla)
+  print("\n",FLAGS.input_files,"\n") #data/tfrecord/lower_case_1_seq_len_512_max_pred_80_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5_shard_1472_test_split_10/books_wiki_en_corpus/training/*
   # Runs customized training loop.
   return run_customized_training(
       strategy,
@@ -199,6 +200,8 @@ def main(_):
   if FLAGS.use_fp16:
     policy = tf.keras.mixed_precision.experimental.Policy("mixed_float16")
     tf.keras.mixed_precision.experimental.set_policy(policy)
+
+  print("\nFLAGS.init_checkpoint:", FLAGS.init_checkpoint,"\n")
 
   run_bert_pretrain(strategy)
 

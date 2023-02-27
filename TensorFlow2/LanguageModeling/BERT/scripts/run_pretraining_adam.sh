@@ -17,11 +17,11 @@
 
 echo "Container nvidia build = " $NVIDIA_BUILD_ID
 
-num_gpus=${1:-8}
-train_batch_size=${2:-14}
+num_gpus=${1:-1} #8
+train_batch_size=${2:-14} #14
 learning_rate=${3:-"1e-4"}
 precision=${4:-"fp16"}
-use_xla=${5:-"true"}
+use_xla=${5:-"true"} 
 warmup_steps=${6:-"10000"}
 train_steps=${7:-1144000}
 bert_model=${8:-"large"}
@@ -29,7 +29,8 @@ num_accumulation_steps=${9:-1}
 seq_len=${10:-512}
 max_pred_per_seq=${11:-80}
 
-DATA_DIR=data/tfrecord/lower_case_1_seq_len_${seq_len}_max_pred_${max_pred_per_seq}_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5_shard_1472_test_split_10/books_wiki_en_corpus
+# DATA_DIR=data/tfrecord/lower_case_1_seq_len_${seq_len}_max_pred_${max_pred_per_seq}_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5_shard_1472_test_split_10/books_wiki_en_corpus
+DATA_DIR=data/tfrecord/lower_case_1_seq_len_${seq_len}_max_pred_${max_pred_per_seq}_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5_shard_1472_test_split_10/wikicorpus_en/
 
 if [ "$bert_model" = "large" ] ; then
     export BERT_CONFIG=data/download/google_pretrained_weights/uncased_L-24_H-1024_A-16/bert_config.json

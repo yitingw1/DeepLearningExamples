@@ -35,6 +35,25 @@ dgxa100_8gpu_fp16 ()
   echo $train_batch_size_phase1 $train_batch_size_phase2 $eval_batch_size $learning_rate_phase1 $learning_rate_phase2 $precision $use_xla $num_gpus $warmup_steps_phase1 $warmup_steps_phase2 $train_steps $save_checkpoint_steps $num_accumulation_steps_phase2
 }
 
+dgxa100_1gpu_fp16 ()
+{
+  train_batch_size_phase1=312  # 312
+  train_batch_size_phase2=40  # 40
+  eval_batch_size=8
+  learning_rate_phase1="8.12e-4"
+  learning_rate_phase2="5e-4"
+  precision="fp16"
+  use_xla="false"  # true
+  num_gpus=1
+  warmup_steps_phase1=2000
+  warmup_steps_phase2=200
+  train_steps=6416
+  save_checkpoints_steps=100
+  num_accumulation_steps_phase1=32
+  num_accumulation_steps_phase2=96
+  echo $train_batch_size_phase1 $train_batch_size_phase2 $eval_batch_size $learning_rate_phase1 $learning_rate_phase2 $precision $use_xla $num_gpus $warmup_steps_phase1 $warmup_steps_phase2 $train_steps $save_checkpoint_steps $num_accumulation_steps_phase2
+}
+
 dgxa100_8gpu_tf32 ()
 {
   train_batch_size_phase1=176

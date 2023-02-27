@@ -43,6 +43,8 @@ DATESTAMP=`date +'%y%m%d%H%M%S'`
 
 #Edit to save logs & checkpoints in a different directory
 RESULTS_DIR=${RESULTS_DIR:-/results/${TAG}_${DATESTAMP}}
+### manual resume ###
+# RESULTS_DIR=/results/tf_bert_pretraining_lamb_large_fp16_gbs13840_gbs21920_230224070951  # resume
 LOGFILE=$RESULTS_DIR/$TAG.$DATESTAMP.log
 mkdir -m 777 -p $RESULTS_DIR
 printf "Saving checkpoints to %s\n" "$RESULTS_DIR"
@@ -56,9 +58,17 @@ printf -v SCRIPT_ARGS "%d %d %d %e %e %s %s %d %d %d %d %d %d %d %s %s" \
                       $num_accumulation_steps_phase1 $num_accumulation_steps_phase2 "$bert_model"
 
 set -x
+echo
+echo $(date)
+echo
 # RUN PHASE 1
 bash scripts/run_pretraining_lamb_phase1.sh $SCRIPT_ARGS |& tee -a $LOGFILE
-
+echo
+echo $(date)
+echo
 # RUN PHASE 2
 bash scripts/run_pretraining_lamb_phase2.sh $SCRIPT_ARGS |& tee -a $LOGFILE
+echo
+echo $(date)
+echo
 set +x

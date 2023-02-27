@@ -223,6 +223,7 @@ def run_customized_training_loop(
           'Checkpoint file %s found and restoring from '
           'initial checkpoint for core model.', init_checkpoint)
       checkpoint = tf.train.Checkpoint(model=sub_model)
+      print("\ninit_checkpoint:",init_checkpoint,"\n") # phase2
       checkpoint.restore(init_checkpoint).assert_existing_objects_matched()
       logging.info('Loading from checkpoint file completed')
 

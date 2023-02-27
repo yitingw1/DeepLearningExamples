@@ -72,9 +72,12 @@ seq_len=128
 max_pred_per_seq=20
 RESULTS_DIR_PHASE1=${RESULTS_DIR}/phase_1
 mkdir -m 777 -p $RESULTS_DIR_PHASE1
+# RESUME_CKPT=${RESULTS_DIR}/phase_1/ckpt-4  ### manual resume ###
 
-INPUT_FILES="$DATA_DIR/tfrecord/lower_case_1_seq_len_${seq_len}_max_pred_${max_pred_per_seq}_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5_shard_1472_test_split_10/books_wiki_en_corpus/training/*"
-EVAL_FILES="$DATA_DIR/tfrecord/lower_case_1_seq_len_${seq_len}_max_pred_${max_pred_per_seq}_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5_shard_1472_test_split_10/books_wiki_en_corpus/test"
+# INPUT_FILES="$DATA_DIR/tfrecord/lower_case_1_seq_len_${seq_len}_max_pred_${max_pred_per_seq}_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5_shard_1472_test_split_10/books_wiki_en_corpus/training/*"
+# EVAL_FILES="$DATA_DIR/tfrecord/lower_case_1_seq_len_${seq_len}_max_pred_${max_pred_per_seq}_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5_shard_1472_test_split_10/books_wiki_en_corpus/test"
+INPUT_FILES="$DATA_DIR/tfrecord/lower_case_1_seq_len_${seq_len}_max_pred_${max_pred_per_seq}_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5_shard_1472_test_split_10/wikicorpus_en/training/*"
+EVAL_FILES="$DATA_DIR/tfrecord/lower_case_1_seq_len_${seq_len}_max_pred_${max_pred_per_seq}_masked_lm_prob_0.15_random_seed_12345_dupe_factor_5_shard_1472_test_split_10/wikicorpus_en/test"
 
 #Check if all necessary files are available before training
 for DIR_or_file in $DATA_DIR $RESULTS_DIR_PHASE1 $BERT_CONFIG; do
@@ -84,6 +87,8 @@ for DIR_or_file in $DATA_DIR $RESULTS_DIR_PHASE1 $BERT_CONFIG; do
   fi
 done
 
+set -x  # print command
+### manual resume --init_checkpoint=$RESUME_CKPT ###      --init_checkpoint=$RESUME_CKPT \
  $mpi python /workspace/bert_tf2/run_pretraining.py \
      --input_files=$INPUT_FILES \
      --model_dir=$RESULTS_DIR_PHASE1 \
@@ -99,4 +104,5 @@ done
      --learning_rate=$learning_rate_phase1 \
      --optimizer_type=LAMB \
      $horovod $PREC
+set +x
 

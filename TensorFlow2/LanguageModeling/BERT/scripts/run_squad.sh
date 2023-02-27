@@ -25,6 +25,8 @@ use_xla=${5:-"true"}
 bert_model=${6:-"large"}
 squad_version=${7:-"1.1"}
 epochs=${8:-"2"}
+use_mytrain=${9:-"false"}
+pretrain_path=${10:-"results/tf_bert_pretraining_lamb_large_fp16_gbs13840_gbs21920_230224121707/phase_2/pretrained/bert_model.ckpt-1"}
 
 if [ $num_gpu -gt 1 ] ; then
     mpi_command="mpirun -np $num_gpu \
@@ -52,10 +54,17 @@ else
     use_xla_tag=""
 fi
 
+# pretrain model
 if [ "$bert_model" = "large" ] ; then
     export BERT_BASE_DIR=data/download/google_pretrained_weights/uncased_L-24_H-1024_A-16
 else
     export BERT_BASE_DIR=data/download/google_pretrained_weights/uncased_L-12_H-768_A-12
+fi
+
+if [ "$use_mytrain" = "false" ] ; then
+    export PRETRAIN_FILE=$BERT_BASE_DIR/bert_model.ckpt
+else
+    export PRETRAIN_FILE=$pretrain_path
 fi
 
 export SQUAD_VERSION=v$squad_version
@@ -80,7 +89,7 @@ $mpi_command python run_squad.py \
   --predict_file=${SQUAD_DIR}/dev-${SQUAD_VERSION}.json \
   --vocab_file=${BERT_BASE_DIR}/vocab.txt \
   --bert_config_file=$BERT_BASE_DIR/bert_config.json \
-  --init_checkpoint=$BERT_BASE_DIR/bert_model.ckpt \
+  --init_checkpoint=$PRETRAIN_FILE \
   --train_batch_size=$batch_size \
   --learning_rate=$learning_rate \
   --num_train_epochs=$epochs \
